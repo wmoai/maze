@@ -10,7 +10,7 @@ var map = [
 
 module.exports.view = function(px, py, dir) {
   if (map[px][py]) {
-    alert('in the wall !');
+    // alert('in the wall !');
   }
   var view = [];
   if (dir == 0) {
