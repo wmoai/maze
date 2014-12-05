@@ -18,6 +18,22 @@ $(function() {
       break;
     }
   });
+  $('#view').on('click', function(e) {
+    var offset = $(this).offset();
+    var ex = e.pageX - offset.left
+      , ey = e.pageY - offset.top
+      , width = $(this).width()
+      , height = $(this).height();
+    if (ex < width/8) {
+      left();
+    } else if (ex > width/8*7) {
+      right();
+    } else if (ey < height/3) {
+      fwd();
+    } else if (ey > height/3*2) {
+      back();
+    }
+  });
 
   function fwd() {
     socket.emit('fwd');

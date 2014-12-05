@@ -12,50 +12,35 @@ app.get('/', function(req, res) {
 });
 
 var map = require('./map');
+var User = require('./user');
+
 var io = require('socket.io')(server);
 var room = io.on('connection', function(socket) {
   console.log('connect');
-  socket.pt = {
-    x: 1,
-    y: 1,
-    dir: 0
-  };
+  socket.user = new User;
 
   function look() {
-    var pt = socket.pt;
-    socket.emit('view', map.view(pt.x, pt.y, pt.dir));
+    var user = socket.user;
+    socket.emit('view', map.view(user.x, user.y, user.dir));
   }
   socket.on('look', look);
   socket.on('fwd', function() {
-    switch(socket.pt.dir) {
-    case 0:
-      socket.pt.y++;
-      break;
-    case 1:
-      socket.pt.x++;
-      break;
-    case 2:
-      socket.pt.y--;
-      break;
-    case 3:
-      socket.pt.x--;
-      break;
+    var npt = socket.user.willWalk();
+    if (map.isMovable(npt[0], npt[1])) {
+      socket.user.walk();
     }
     look();
   });
   socket.on('back', function() {
-    socket.pt.dir += 2;
-    socket.pt.dir %= 4;
+    socket.user.back();
     look();
   });
   socket.on('left', function() {
-    socket.pt.dir += 3;
-    socket.pt.dir %= 4;
+    socket.user.left();
     look();
   });
   socket.on('right', function() {
-    socket.pt.dir++;
-    socket.pt.dir %= 4;
+    socket.user.right();
     look();
   });
 });

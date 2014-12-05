@@ -40,7 +40,7 @@ var getDrawer = function() {
 
     ctx.beginPath();
     ctx.fillStyle = 'rgb(50, 50, 50)';
-    ctx.fillRect(0,0,200,200);
+    ctx.fillRect(0,0,px(16),py(16));
 
     ctx.fillStyle = 'rgb(20, 20, 20)';
     ctx.fillRect(0,py(6),px(16),py(4));

@@ -4,14 +4,16 @@ var map = [
   [1,0,1,1,0,1,1],
   [1,0,0,0,0,1,1],
   [1,0,1,0,1,1,1],
+  [1,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,1],
   [1,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1]
+  [1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1]
 ];
 
 module.exports.view = function(px, py, dir) {
-  if (map[px][py]) {
-    // alert('in the wall !');
-  }
   var view = [];
   if (dir == 0) {
     for (var y=0; y<3; y++) {
@@ -64,6 +66,10 @@ module.exports.view = function(px, py, dir) {
   }
 
   return view;
+}
+
+module.exports.isMovable = function(x, y) {
+  return map[x][y] == 0;
 }
 
 
