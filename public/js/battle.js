@@ -37,12 +37,12 @@ $(function() {
     this.hp -= damage;
     log(opp.name + 'の攻撃！' + this.name + 'に' + damage + 'のダメージ');
     if (this.hp <= 0) {
-      log(this.name + ' は死にました！');
+      log(this.name + 'は死にました！');
     }
   }
 
   var you = new Chara("あなた", 45, 32, 18, 15);
-  var npc = new Chara("てき", 32, 28, 12, 13);
+  var npc = new Chara("敵", 32, 28, 12, 13);
 
   var turn = function() {
     // decide action
