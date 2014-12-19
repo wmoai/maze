@@ -1,17 +1,20 @@
-var map = [
-  [1,1,1,1,1,1,1],
-  [1,0,1,0,0,0,1],
-  [1,0,1,1,0,1,1],
-  [1,0,0,0,0,1,1],
-  [1,0,1,0,1,1,1],
-  [1,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,1],
-  [1,0,0,0,0,0,1],
-  [1,0,0,0,0,0,1,1,1,1],
-  [1,0,0,0,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1,1,1,1]
-];
+var fs = require('fs')
+  , csv = require('csv')
+;
+
+
+var map = [];
+module.exports.init = function() {
+  var str = fs.readFileSync('map.csv', 'utf8');
+  csv.parse(str, function(err, arr) {
+    map = arr.map(function(line) {
+      return line.map(function(val) { 
+        return parseInt(val);
+      });
+    });
+  });
+}
+
 
 module.exports.view = function(px, py, dir) {
   var view = [];
@@ -64,7 +67,6 @@ module.exports.view = function(px, py, dir) {
       view.push(line);
     }
   }
-
   return view;
 }
 

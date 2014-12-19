@@ -60,6 +60,7 @@ app.get('/app', function(req, res) {
 });
 
 
+require('./map').init();
 var io = require('socket.io')(server);
 io.of('/game').use(function (socket, next) {
   var req = socket.handshake;
