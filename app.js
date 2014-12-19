@@ -1,55 +1,93 @@
 var express = require('express')
   , app = express()
+  , bodyParser = require('body-parser')
+  , Session = require('express-session')
+  , RedisConnect = require('connect-redis')(Session)
   , cookieParser = require('cookie-parser')
-  , parseCookie = cookieParser('cat')
   , server = require('http').createServer(app).listen(3000)
 ;
+var COOKIE_SECRET = "test";
+var COOKIE_KEY = "sid";
+
+var session = Session({
+  name: COOKIE_KEY ,
+  secret: COOKIE_SECRET,
+  store: new RedisConnect({
+    host:'127.0.0.1',
+    port:6379
+  })
+});
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
-app.use(parseCookie);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session);
 
+var User = require('./model/user');
 app.get('/', function(req, res) {
-  res.cookie('test', 2);
-  res.render('index');
+  if (req.session.loginName) {
+    res.redirect('/app');
+  } else {
+    res.render('signin');
+  }
+});
+app.post('/signup', function(req, res) {
+  var name = req.body.name;
+  var password = req.body.password;
+  User.create(name, password, function(error, user) {
+    if (error) return next(error);
+    res.send(user);
+  });
+});
+app.post('/signin', function(req, res, next) {
+  var name = req.body.name;
+  var password = req.body.password;
+  User.auth(name, password, function(error, user) {
+    if (error) return next(error);
+    var sess = req.session;
+    sess.loginName = name;
+    res.redirect('/app');
+  });
+});
+app.get('/app', function(req, res) {
+  if (!req.session.loginName) {
+    res.redirect('/');
+  } else {
+    res.render('index');
+  }
 });
 
-var User = require('./user');
 
 var io = require('socket.io')(server);
-io.use(function (socket, next) {
+io.of('/game').use(function (socket, next) {
   var req = socket.handshake;
   var res = {};
-  parseCookie(req, res, function(err) {
-    console.log(req.cookies);
+  session(req, res, function(err) {
+    next();
   });
 });
 io.of('/game').on('connection', function(socket) {
   console.log('start game');
 
-  socket.on('login', function(name) {
-    if (socket.logined) {
-      return;
-    }
-    socket.logined = true;
+  var name = socket.handshake.session.loginName;
+  var User = require('./user');
 
-    socket.emit('start');
-    User.getUser(socket, name, function(user) {
-      socket.user = user;
-      socket.on('disconnect', function() {
-        socket.user.save();
-      });
+  User.getUser(socket, name, function(user) {
+    socket.user = user;
+    socket.on('disconnect', function() {
+      socket.user.save();
+    });
 
-      // move
-      socket.on('move', function(data) {
-        socket.user.move(data);
-      });
-      // battle
-      socket.on('battle', function(data) {
-
-      });
+    // move
+    socket.on('move', function(data) {
+      socket.user.move(data);
+    });
+    // battle
+    socket.on('battle', function(data) {
 
     });
+
   });
 });
