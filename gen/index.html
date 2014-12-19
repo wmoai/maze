@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>meiro</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="meiro.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        border:1px solid #333;
+      }
+      td {
+        border-collapse: collapse;
+        border:1px solid gainsboro;
+        margin: 0;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+      }
+      td.ng {
+        background-color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="init">
+      <input type="text" id="width" value="20">
+      X
+      <input type="text" id="height" value="20">
+      <input type="submit" value="init">
+    </form>
+    <div id="field" style="float:left">
+    </div>
+
+    <div style="float:left">
+      <form id="csv" style="margin-top:20px">
+        <input type="submit" value="csv =>">
+      </form>
+      <form id="render">
+        <input type="submit" value="<= render">
+      </form>
+    </div>
+
+    <textarea id="output" rows="30" cols="100" style="float:left"></textarea>
+  </body>
+</html>
