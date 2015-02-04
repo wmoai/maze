@@ -1,25 +1,45 @@
 $(function() {
   var socket = io('/game');
 
-  socket.emit('move', 0);
-  $('html').on('keyup', function(e) {
-    switch(e.keyCode) {
-      case 37:
-        left();
-      break;
-      case 38:
-        fwd();
-      break;
-      case 39:
-        right();
-      break;
-      case 40:
-        back();
-      break;
+  socket.on('stat', function(data) {
+    var hp = '';
+    for (var i=0; i<data.hp; i++) {
+      hp += '|';
     }
+    $('#hp').html(hp);
+
+    data.pannels.forEach(function(pannel) {
+      var elm = $('<input>', {'class':'pnl', 'type':'button'});
+      elm.val(pannel);
+      $('#pnls').append(elm);
+    });
   });
 
-  // tap io
+  socket.emit('mv', 0);
+  socket.emit('stat');
+  var wait = function() {
+    $('html').on('keyup', function(e) {
+      switch(e.keyCode) {
+        case 37:
+          left();
+        break;
+        case 38:
+          fwd();
+        break;
+        case 39:
+          right();
+        break;
+        case 40:
+          back();
+        break;
+      }
+      $(this).off();
+      setTimeout(wait, 150);
+    });
+  }
+  wait();
+
+  // TAP interface
   $('#view').on('click', function(e) {
     var offset = $(this).offset();
     var ex = e.pageX - offset.left
@@ -38,25 +58,35 @@ $(function() {
   });
 
   function fwd() {
-    socket.emit('move', 1);
+    socket.emit('mv', 1);
   }
   function left() {
-    socket.emit('move', 2);
+    socket.emit('mv', 2);
   }
   function right() {
-    socket.emit('move', 3);
+    socket.emit('mv', 3);
   }
   function back() {
-    socket.emit('move', 4);
+    socket.emit('mv', 4);
   }
 
   var drawer = getDrawer();
   socket.on('view', function(data) {
     drawer(data);
   });
-  socket.on('log', function(log) {
-    var line = $('<div>').html(log);
+  var printLog = function(message) {
+    var line = $('<div>').html(message);
     $('#console').prepend(line);
+  }
+  socket.on('log', function(log) {
+    printLog(log);
+  });
+
+  // pannel
+  $('#pnls').on('click', '.pnl', function(e) {
+    var index = $('#pnls > .pnl').index(this);
+    socket.emit('pnl', index);
   });
 
 });
+

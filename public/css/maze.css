@@ -1,0 +1,34 @@
+#container {
+  display:-webkit-box;
+}
+
+#pnls {
+  margin-top: 10px;
+  display:-webkit-box;
+}
+#pnls .pnl {
+  width: 80px;
+  height: 80px;
+  border-right: solid 1px gray;
+}
+
+#side {
+  margin-left:30px;
+}
+
+#hp {
+  letter-spacing: -2px;
+}
+
+#command {
+  margin-top:30px;
+}
+
+#console {
+  height: 100px;
+  width: 400px;
+  overflow: scroll;
+  background-color: whitesmoke;
+}
+
+

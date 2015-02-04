@@ -74,4 +74,12 @@ module.exports.isMovable = function(x, y) {
   return map[x][y] == 0;
 }
 
+module.exports.event = function(x, y) {
+  if (x == 10 && y == 15) {
+    return function() {
+      return 'goal !';
+    }
+  }
+}
+
 

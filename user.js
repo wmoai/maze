@@ -1,6 +1,5 @@
 var map = require('./map');
 var redis = require('redis');
-var Chara = require('./chara');
 client = redis.createClient();
 
 var User = function(socket, name) {
@@ -13,9 +12,19 @@ var User = function(socket, name) {
   this.battle = false;
   this.encount = 100;
 
-  this.chara = new Chara(name, 42, 28, 16, 14);
+  this.hp = 82;
+  this.pannels = ['sward', 'heal', 'run'];
+}
+User.prototype.status = function() {
+  this.socket.emit('stat', {
+    hp: this.hp,
+    pannels: this.pannels
+  });
 }
 User.prototype.move = function(data) {
+  if (this.battle) {
+    return;
+  }
   switch (data) {
     case 0:
       this.look();
@@ -54,54 +63,33 @@ User.prototype.willWalk = function() {
   return [nx, ny];
 }
 User.prototype.walk = function() {
-  if (this.battle) {
-    return;
-  }
   var npt = this.willWalk();
   if (map.isMovable(npt[0], npt[1])) {
-    switch(this.dir) {
-      case 0:
-        this.y++;
-      break;
-      case 1:
-        this.x++;
-      break;
-      case 2:
-        this.y--;
-      break;
-      case 3:
-        this.x--;
-      break;
+    this.x = npt[0];
+    this.y = npt[1];
+    var event = map.event(this.x, this.y);
+    if (event) {
+      this.socket.emit('log', event());
     }
-    // TODO check encount
-    this.encount -= 10;
-    if (this.encount <= 0) {
-      this.socket.emit('log', 'encount !');
-      this.encount = 100;
+
+    // dec encount
+    if (this.encount > 0) {
+      this.encount -= 10;
     }
   }
   this.look();
 }
 User.prototype.back = function() {
-  if (this.battle) {
-    return;
-  }
   this.dir += 2;
   this.dir %= 4;
   this.look();
 }
 User.prototype.left = function() {
-  if (this.battle) {
-    return;
-  }
   this.dir += 3;
   this.dir %= 4;
   this.look();
 }
 User.prototype.right = function() {
-  if (this.battle) {
-    return;
-  }
   this.dir++;
   this.dir %= 4;
   this.look();
@@ -126,4 +114,5 @@ exports.getUser = function(socket, name, cb) {
     cb(user);
   });
 }
+
 

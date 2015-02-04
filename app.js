@@ -38,7 +38,7 @@ app.post('/signup', function(req, res) {
   var password = req.body.password;
   User.create(name, password, function(error, user) {
     if (error) return next(error);
-    res.send(user);
+    res.redirect('/app');
   });
 });
 app.post('/signin', function(req, res, next) {
@@ -82,12 +82,27 @@ io.of('/game').on('connection', function(socket) {
     });
 
     // move
-    socket.on('move', function(data) {
+    socket.on('mv', function(data) {
+      if (socket.battle) {
+        return;
+      }
       socket.user.move(data);
+      // check encount
+      if (!socket.battle && socket.user.encount <= 0) {
+        socket.emit('log', 'encount !');
+        // socket.battle = true;
+        socket.user.encount = 100;
+      }
     });
-    // battle
-    socket.on('battle', function(data) {
 
+    // pannel
+    socket.on('pnl', function(data) {
+      socket.emit('log', data);
+    });
+
+    // status
+    socket.on('stat', function(data) {
+      socket.user.status();
     });
 
   });

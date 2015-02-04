@@ -1,20 +1,21 @@
 html
   head
     title maze
+    link(rel="stylesheet", href="/css/maze.css")
     script(src="/socket.io/socket.io.js")
     script(src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
     script(src="/js/render.js")
     script(src="/js/client.js")
-    script(src="/js/battle.js")
   body
-    #container(style="display:-webkit-box")
+    #container
       #main
         canvas#view(width="640", height="640")
-      #side(style="margin-left:30px")
+        #pnls
+      #side
         div HP : 
           span#hp
-        #command(style="margin-top:30px")
+        #command
           input#atk(type="button", value="atk")
           input#dff(type="button", value="dff")
-        #console(style="height:100px;width:400px;overflow:scroll;background-color:whitesmoke;")
+        #console
 
