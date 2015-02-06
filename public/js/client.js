@@ -8,6 +8,7 @@ $(function() {
     }
     $('#hp').html(hp);
 
+    $('#pnls').empty();
     data.pannels.forEach(function(pannel) {
       var elm = $('<input>', {'class':'pnl', 'type':'button'});
       elm.val(pannel);
@@ -79,7 +80,7 @@ $(function() {
     $('#console').prepend(line);
   }
   socket.on('log', function(log) {
-    printLog(log);
+    printLog(log.replace(/[\n\r]/g, '<br>'));
   });
 
   // pannel

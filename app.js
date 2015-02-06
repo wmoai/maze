@@ -83,21 +83,12 @@ io.of('/game').on('connection', function(socket) {
 
     // move
     socket.on('mv', function(data) {
-      if (socket.battle) {
-        return;
-      }
       socket.user.move(data);
-      // check encount
-      if (!socket.battle && socket.user.encount <= 0) {
-        socket.emit('log', 'encount !');
-        // socket.battle = true;
-        socket.user.encount = 100;
-      }
     });
 
     // pannel
     socket.on('pnl', function(data) {
-      socket.emit('log', data);
+      socket.user.pannel(data);
     });
 
     // status

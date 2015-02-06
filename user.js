@@ -1,5 +1,7 @@
 var map = require('./map');
 var redis = require('redis');
+var Module = require('./module/module');
+var Battle = require('./battle');
 client = redis.createClient();
 
 var User = function(socket, name) {
@@ -13,13 +15,24 @@ var User = function(socket, name) {
   this.encount = 100;
 
   this.hp = 82;
-  this.pannels = ['sward', 'heal', 'run'];
+  this.pannels = [
+    new Module('Sword')
+  ];
 }
 User.prototype.status = function() {
+  var pannlesName = [];
+  this.pannels.forEach(function(pannel) {
+    pannlesName.push(pannel.name);
+  });
   this.socket.emit('stat', {
     hp: this.hp,
-    pannels: this.pannels
+    pannels: pannlesName
   });
+}
+User.prototype.damage = function(damage) {
+    this.hp -= damage;
+    this.socket.emit('log', damage+'のダメージ');
+    this.status();
 }
 User.prototype.move = function(data) {
   if (this.battle) {
@@ -67,17 +80,22 @@ User.prototype.walk = function() {
   if (map.isMovable(npt[0], npt[1])) {
     this.x = npt[0];
     this.y = npt[1];
-    var event = map.event(this.x, this.y);
-    if (event) {
-      this.socket.emit('log', event());
-    }
 
-    // dec encount
-    if (this.encount > 0) {
-      this.encount -= 10;
-    }
+    var self = this;
+    this.event(function(happened) {
+      if (!happened) {
+        // encount
+        if (self.encount > 0) {
+          self.encount -= 10;
+          if (self.encount <= 0) {
+            self.battle = new Battle(self);
+            self.encount = 150;
+          }
+        }
+      }
+      self.look();
+    });
   }
-  this.look();
 }
 User.prototype.back = function() {
   this.dir += 2;
@@ -113,6 +131,49 @@ exports.getUser = function(socket, name, cb) {
     }
     cb(user);
   });
+}
+
+User.prototype.event = function(cb) {
+  if (this.x == 10 && this.y == 15) {
+    // message sample
+    // 1.message
+    this.socket.emit('log', 'ガラクタが置いてある');
+    return cb(true);
+  }
+  if (this.x == 2 && this.y == 1) {
+    // damage sample
+    // 1.message
+    // 2.damage
+    this.socket.emit('log', '落石だ！');
+    this.damage(10);
+    return cb(true);
+  }
+  if (this.x == 10 && this.y == 6) {
+    // move sample
+    // 1.message
+    // 2.next point
+    this.x = 2;
+    this.y = 3;
+    this.socket.emit('log', 'テレポーターだ！');
+    return cb(true);
+  }
+  cb(false);
+}
+
+User.prototype.pannel = function(index) {
+  var self = this;
+  var module = this.pannels[index];
+  if (this.battle) {
+    this.battle.run(module, function(end) {
+      if (end) {
+        self.socket.emit('log', '闘いに勝った');
+        self.battle = null;
+      }
+    });
+  } else {
+    module.field(this);
+  }
+  this.status();
 }
 
 
