@@ -33,9 +33,9 @@ var getDrawer = function() {
     return y*dy;
   }
 
-  _drawer = function(map) {
-    var canvas = document.getElementById('view');
-    if ( ! canvas || ! canvas.getContext ) { return false; }
+  _drawer = {};
+  _drawer.map = function(map) {
+    canvas = document.getElementById('view');
     var ctx = canvas.getContext('2d');
 
     ctx.beginPath();
@@ -72,6 +72,21 @@ var getDrawer = function() {
       wall(ctx, 16, 0, 0, 16, -3, 3);
     }
   };
+  _drawer.image = function(image) {
+    canvas = document.getElementById('view');
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+    img.src = image;
+    img.onload = function() {
+      var width = img.width / 2
+        , height = img.height / 2
+      ;
+      ctx.drawImage(img,
+                    canvas.width*0.5 - width*0.5,
+                    canvas.height - height - canvas.height*0.1,
+                    width, height);
+    }
+  }
   return _drawer;
 };
 

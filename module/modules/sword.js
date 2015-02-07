@@ -2,7 +2,7 @@ var Module = function(name) {
   this.name = name;
 }
 Module.prototype.field = function(user) {
-  user.socket.emit('log', user.x + ":" + user.y);
+  user.socket.emit('log', '北'+ user.y + " 東" + user.x);
 }
 Module.prototype.battle = function(battle, cb) {
   // attack

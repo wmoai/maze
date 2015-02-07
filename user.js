@@ -1,6 +1,6 @@
 var map = require('./map');
 var redis = require('redis');
-var Module = require('./module/module');
+var module = require('./module/');
 var Battle = require('./battle');
 client = redis.createClient();
 
@@ -16,7 +16,8 @@ var User = function(socket, name) {
 
   this.hp = 82;
   this.pannels = [
-    new Module('Sword')
+    new module.sword('Short Sword'),
+    new module.cure('Cure')
   ];
 }
 User.prototype.status = function() {
@@ -29,10 +30,21 @@ User.prototype.status = function() {
     pannels: pannlesName
   });
 }
-User.prototype.damage = function(damage) {
-    this.hp -= damage;
-    this.socket.emit('log', damage+'のダメージ');
-    this.status();
+User.prototype.damage = function(message,damage) {
+  this.hp -= damage;
+  this.socket.emit('log', message+' '+damage+'のダメージを受けた！');
+  if (this.isDeath()) {
+    this.socket.emit('log', '死にました');
+  }
+  this.status();
+}
+User.prototype.cure = function(message, cure) {
+  this.hp += cure;
+  this.socket.emit('log', message+' '+cure+'ポイント回復！');
+  this.status();
+}
+User.prototype.isDeath = function() {
+  return (this.hp <= 0);
 }
 User.prototype.move = function(data) {
   if (this.battle) {
@@ -116,7 +128,7 @@ User.prototype.look = function() {
   this.socket.emit('view', map.view(this.x, this.y, this.dir));
 }
 User.prototype.save = function() {
-  client.set(this.name, [this.x, this.y, this.dir], redis.print);
+  client.set(this.name, [this.x, this.y, this.dir, this.hp], redis.print);
 }
 
 exports.getUser = function(socket, name, cb) {
@@ -124,10 +136,16 @@ exports.getUser = function(socket, name, cb) {
   client.get(name, function(err, reply) {
     if (err || !reply) {
     } else {
-      var point = reply.split(',');
-      user.x = parseInt(point[0]);
-      user.y = parseInt(point[1]);
-      user.dir = parseInt(point[2]);
+      var val = reply.split(',');
+      user.x = parseInt(val[0]);
+      user.y = parseInt(val[1]);
+      user.dir = parseInt(val[2]);
+      if (val[3]) {
+        user.hp = parseInt(val[3]);
+        if (user.hp < 1) {
+          user.hp = 1;
+        }
+      }
     }
     cb(user);
   });
@@ -144,8 +162,7 @@ User.prototype.event = function(cb) {
     // damage sample
     // 1.message
     // 2.damage
-    this.socket.emit('log', '落石だ！');
-    this.damage(10);
+    this.damage('落石だ！', 10);
     return cb(true);
   }
   if (this.x == 10 && this.y == 6) {

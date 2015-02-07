@@ -73,7 +73,11 @@ $(function() {
 
   var drawer = getDrawer();
   socket.on('view', function(data) {
-    drawer(data);
+    drawer.map(data);
+  });
+  socket.on('image', function(data) {
+    console.log(data);
+    drawer.image(data);
   });
   var printLog = function(message) {
     var line = $('<div>').html(message);
