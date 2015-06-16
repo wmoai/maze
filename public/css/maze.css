@@ -1,34 +1,25 @@
-#container {
-  display:-webkit-box;
+body {
+  display: -webkit-box;
+  display: -moz-box;
 }
 
-#pnls {
-  margin-top: 10px;
-  display:-webkit-box;
+#manual {
+  width: 300px;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: whitesmoke;
 }
-#pnls .pnl {
-  width: 80px;
-  height: 80px;
-  border-right: solid 1px gray;
-}
-
-#side {
-  margin-left:30px;
-}
-
-#hp {
-  letter-spacing: -2px;
-}
-
-#command {
-  margin-top:30px;
+#manual ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 #console {
-  height: 200px;
-  width: 400px;
-  overflow: scroll;
-  background-color: whitesmoke;
+  margin-left: 10px;
+}
+#score {
+  margin: 5px 10px;
 }
 
 

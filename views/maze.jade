@@ -1,0 +1,21 @@
+html
+  head
+    title maze
+    script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+    script(src="/js/maze.js")
+    script(src="/js/render.js")
+    link(rel="stylesheet", href="/css/maze.css")
+  body(style='overflow:hidden')
+    #main
+      canvas#view(width="640", height="640")
+    #menu
+      #manual
+        ul
+          li ↑：前進
+          li ←：左を向く
+          li →：右を向く
+          li ↓：振り返る
+          li 1：ヒント×
+            span#hints 0
+      #console
+      #score
