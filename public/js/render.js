@@ -33,9 +33,9 @@ var getDrawer = function() {
     return y*dy;
   }
 
-  _drawer = function(map) {
-    var canvas = document.getElementById('view');
-    if ( ! canvas || ! canvas.getContext ) { return false; }
+  _drawer = {};
+  _drawer.map = function(map) {
+    canvas = document.getElementById('view');
     var ctx = canvas.getContext('2d');
 
     ctx.beginPath();
