@@ -1,7 +1,7 @@
 $(function() {
 
-  var baseWidth = Math.floor(Math.random() * 6) * 2 + 5
-  , baseHeight = Math.floor(Math.random() * 6) * 2 + 5;
+  var baseWidth = Math.floor(Math.random() * 6) * 2 + 15
+  , baseHeight = Math.floor(Math.random() * 6) * 2 + 15;
 
   var dirStr = ['北','東','南','西'];
 
