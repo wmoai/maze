@@ -5,6 +5,10 @@ $(function() {
 
   var dirStr = ['北','東','南','西'];
 
+  var getTime = function() {
+    return new Date().getTime();
+  }
+
   var generateMap = function(width, height) {
     var map = [];
     for (var i=1; i<=width; i++) {
@@ -108,7 +112,7 @@ $(function() {
       y: baseHeight - (Math.floor(Math.random() * 4) * 2 + 2)
     };
     this.steps = 0;
-    this.start = new Date();
+    this.start = getTime();
     this.drawer = getDrawer();
     this.hints = 4;
     this.view();
@@ -188,7 +192,7 @@ $(function() {
         nx--;
       break;
     }
-    $('#console').html('');
+    this.log('');
     if (map[nx][ny] == 0) {
       this.x = nx;
       this.y = ny;
@@ -197,9 +201,9 @@ $(function() {
     }
     if (!this.end && this.x == this.goal.x && this.y == this.goal.y) {
       this.end = true;
-      var time = Math.floor((new Date() - this.start) / 1000);
+      var time = Math.floor((getTime() - this.start) / 1000);
       var score = baseWidth * baseHeight - this.steps - time;
-      $('#score').html('ゴール！<br>スコア：'+score);
+      this.log('ゴール！<br>スコア：'+score);
     }
   }
   Chara.prototype.left = function() {
@@ -223,10 +227,15 @@ $(function() {
       var sn = (north >= 0) ? '北' : '南';
       var east = this.goal.x - this.x;
       var ew = (east >= 0) ? '東' : '西';
-      $('#console').html(dirStr[this.dir]+'を向いている<br>ゴールは'+sn+'に'+Math.abs(north)
-                         +'、'+ew+'に'+Math.abs(east));
+      this.log(dirStr[this.dir]+'を向いている<br>ゴールは'+sn+'に'+Math.abs(north)
+        +'、'+ew+'に'+Math.abs(east));
       this.hints--;
       $('#hints').html(this.hints);
+    }
+  }
+  Chara.prototype.log = function(message) {
+    if (!this.end) {
+      $('#console').html(message);
     }
   }
 
@@ -249,6 +258,38 @@ $(function() {
       case 49:
         chara.hint();
       break;
+    }
+  });
+
+  var tapX = 0;
+  var tapY = 0;
+  var tapTime = 0;
+  var taped = false;
+  $('#view').on('touchstart', function(e) {
+    e.preventDefault();
+    tapX = event.changedTouches[0].pageX;
+    tapY = event.changedTouches[0].pageY;
+    tapTime = getTime();
+    taped = true;
+  });
+  $('#view').on('touchend', function(e) {
+    if (taped) {
+      taped = false;
+      e.preventDefault();
+      var dx = event.changedTouches[0].pageX - tapX;
+      var dy = event.changedTouches[0].pageY - tapY;
+      var dtime = getTime() - tapTime;
+      if (Math.floor(dx) < 10 && Math.floor(dy) < 10) {
+        if (dtime < 500) {
+          chara.walk();
+        } else {
+          chara.hint();
+        }
+      } else if (dx > 30) {
+        chara.left();
+      } else if (dx < -30) {
+        chara.right();
+      }
     }
   });
 
