@@ -1,7 +1,7 @@
 $(function() {
 
-  var baseWidth = Math.floor(Math.random() * 6) * 2 + 15
-  , baseHeight = Math.floor(Math.random() * 6) * 2 + 15;
+  var baseWidth = Math.floor(Math.random() * 6) * 2 + 5
+  , baseHeight = Math.floor(Math.random() * 6) * 2 + 5;
 
   var dirStr = ['北','東','南','西'];
 
@@ -200,10 +200,11 @@ $(function() {
       this.steps++;
     }
     if (!this.end && this.x == this.goal.x && this.y == this.goal.y) {
-      this.end = true;
       var time = Math.floor((getTime() - this.start) / 1000);
       var score = baseWidth * baseHeight - this.steps - time;
-      this.log('ゴール！<br>スコア：'+score);
+      this.log('ゴール！<br>スコア：'+score
+              + '<a href="https://twitter.com/share" class="twitter-share-button" data-text="モアイ迷宮を脱出 [score:'+score+']" data-count="none" data-hashtags="maze">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?"http":"https";if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document, "script", "twitter-wjs");</script>');
+      this.end = true;
     }
   }
   Chara.prototype.left = function() {
@@ -238,6 +239,7 @@ $(function() {
       $('#console').html(message);
     }
   }
+
 
   var chara = new Chara();
 
@@ -279,15 +281,15 @@ $(function() {
       var dx = event.changedTouches[0].pageX - tapX;
       var dy = event.changedTouches[0].pageY - tapY;
       var dtime = getTime() - tapTime;
-      if (Math.floor(dx) < 10 && Math.floor(dy) < 10) {
-        if (dtime < 500) {
+      if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) < 3) {
+        if (dtime < 100) {
           chara.walk();
-        } else {
+        } else if (dtime > 500) {
           chara.hint();
         }
-      } else if (dx > 30) {
+      } else if (dx > 10) {
         chara.left();
-      } else if (dx < -30) {
+      } else if (dx < -10) {
         chara.right();
       }
     }
