@@ -1,7 +1,7 @@
 $(function() {
 
-  var baseWidth = 17
-  , baseHeight = 17;
+  var baseWidth = Math.floor(Math.random() * 6) * 2 + 15
+  , baseHeight = Math.floor(Math.random() * 6) * 2 + 15;
 
   var dirStr = ['北','東','南','西'];
 
@@ -100,18 +100,19 @@ $(function() {
   var map = generateMap(baseWidth, baseHeight);
 
   var Chara = function() {
-    this.x = 1;
-    this.y = 1;
-    this.dir = 0;
+    this.x = Math.floor(Math.random() * 3) * 2 + 1;
+    this.y = Math.floor(Math.random() * 3) * 2 + 1;
+    this.dir = Math.floor(Math.random() * 3);
     this.goal = {
-      x: baseWidth-2,
-      y: baseHeight-2
+      x: baseWidth - (Math.floor(Math.random() * 4) * 2 + 2),
+      y: baseHeight - (Math.floor(Math.random() * 4) * 2 + 2)
     };
     this.steps = 0;
     this.start = new Date();
     this.drawer = getDrawer();
-    this.hints = 3;
-    $('#hints').html(this.hints);
+    this.hints = 4;
+    this.view();
+    this.hint();
   }
   Chara.prototype.view = function() {
     var px = this.x
@@ -230,7 +231,6 @@ $(function() {
   }
 
   var chara = new Chara();
-  chara.view();
 
   $('html').on('keyup', function(e) {
     switch(e.keyCode) {
