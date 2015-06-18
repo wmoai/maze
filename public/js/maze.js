@@ -8,6 +8,72 @@ $(function() {
   var getTime = function() {
     return new Date().getTime();
   }
+  Array.prototype.rotateClockwise = function(times) {
+    var buff = this;
+    if (Array.isArray(this[0])) {
+      times %= 4;
+      for (var i=0; i<times; i++) {
+        buff.reverse();
+        buff = buff[0].map(function(col, i) { 
+          return buff.map(function(row) { 
+            return row[i] 
+          })
+        });
+      }
+    }
+    return buff;
+  }
+  Array.prototype.sliceSquare = function(start1, count1, start2, count2) {
+    if (Array.isArray(this[0])) {
+      var result = [];
+      for (var x=start1; x<start1+count1; x++) {
+        var line = [];
+        if (x < 0 || this.length <= x) {
+          for (var i=0; i<count2; i++) {
+            line.push(1);
+          }
+        } else {
+          for (var y=start2; y<start2+count2; y++) {
+            if (y < 0 || this[x].length <= y) {
+              line.push(1);
+            } else {
+              line.push(this[x][y]);
+            }
+          }
+        }
+        result.push(line);
+      }
+      return result;
+    }
+  }
+  Array.prototype.mapView = function(x, y, dir) {
+    var view = [];
+    if (dir == 0) {
+      view = this.sliceSquare(x-1, 3 ,y  , 4).reverse().rotateClockwise(1);
+    } else if (dir == 2) {
+      view = this.sliceSquare(x-1, 3 ,y-3, 4).reverse().rotateClockwise(3);
+    } else if (dir == 1) {
+      view = this.sliceSquare(x  , 4 ,y-1, 3).reverse().rotateClockwise(2);
+    } else if (dir == 3) {
+      view = this.sliceSquare(x-3, 4 ,y-1, 3).reverse().rotateClockwise(0);
+    }
+    return view;
+  }
+
+  var showMap = function(map) {
+    var str = "";
+    map.forEach(function(row) {
+      row.forEach(function(cell) {
+        if (cell==1) {
+          str += "@";
+        } else {
+          str += ".";
+        }
+      });
+      str += "\n";
+    });
+    console.log(str);
+  }
 
   var generateMap = function(width, height) {
     var map = [];
@@ -125,53 +191,13 @@ $(function() {
     ;
     var view = [];
     if (dir == 0) {
-      for (var y=0; y<3; y++) {
-        var line = [];
-        for(var x=-1; x<2; x++) {
-          if (map[px + x] != undefined && map[px + x][py + y] != undefined) {
-            line.push(map[px + x][py + y]);
-          } else {
-            line.push(1);
-          }
-        }
-        view.push(line);
-      }
+      view = map.sliceSquare(px-2, 5 ,py  , 4).reverse().rotateClockwise(1);
     } else if (dir == 2) {
-      for (var y=0; y>-3; y--) {
-        var line = [];
-        for (var x=1; x>-2; x--) {
-          if (map[px + x] != undefined && map[px + x][py + y] != undefined) {
-            line.push(map[px + x][py + y]);
-          } else {
-            line.push(1);
-          }
-        }
-        view.push(line);
-      }
+      view = map.sliceSquare(px-2, 5 ,py-3, 4).reverse().rotateClockwise(3);
     } else if (dir == 1) {
-      for (var x=0; x<3; x++) {
-        var line = [];
-        for (var y=1; y>-2; y--) {
-          if (map[px + x] != undefined && map[px + x][py + y] != undefined) {
-            line.push(map[px + x][py + y]);
-          } else {
-            line.push(1);
-          }
-        }
-        view.push(line);
-      }
+      view = map.sliceSquare(px  , 4 ,py-2, 5).reverse().rotateClockwise(2);
     } else if (dir == 3) {
-      for (var x=0; x>-3; x--) {
-        var line = [];
-        for (var y=-1; y<2; y++) {
-          if (map[px + x] != undefined && map[px + x][py + y] != undefined) {
-            line.push(map[px + x][py + y]);
-          } else {
-            line.push(1);
-          }
-        }
-        view.push(line);
-      }
+      view = map.sliceSquare(px-3, 4 ,py-2, 5).reverse().rotateClockwise(0);
     }
     this.drawer.map(view);
   }
@@ -267,26 +293,28 @@ $(function() {
   var tapY = 0;
   var tapTime = 0;
   var taped = false;
+  var tapTimer = null;
   $('#view').on('touchstart', function(e) {
     e.preventDefault();
     tapX = event.changedTouches[0].pageX;
     tapY = event.changedTouches[0].pageY;
     tapTime = getTime();
     taped = true;
+    tapTimer = setTimeout(function() {
+      chara.hint();
+      taped = false;
+    }, 600);
   });
   $('#view').on('touchend', function(e) {
     if (taped) {
+      clearTimeout(tapTimer);
       taped = false;
       e.preventDefault();
       var dx = event.changedTouches[0].pageX - tapX;
       var dy = event.changedTouches[0].pageY - tapY;
       var dtime = getTime() - tapTime;
-      if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) < 3) {
-        if (dtime < 100) {
-          chara.walk();
-        } else if (dtime > 500) {
-          chara.hint();
-        }
+      if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) < 5) {
+        chara.walk();
       } else if (dx > 10) {
         chara.left();
       } else if (dx < -10) {
