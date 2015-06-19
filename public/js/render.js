@@ -12,14 +12,14 @@ var getDrawer = function() {
   }
 
   function wall(ctx, x, y, w, h, sw, sh, depth) {
-    ctx.fillStyle = wallColor(150 / 10 * (10-depth));
+    ctx.fillStyle = wallColor(150 / 10 * (10-depth*2));
     ctx.fillRect(px(x), py(y), px(w), py(h));
     if (sw != 0 && sh != 0) {
       var bx = x;
       if (sw > 0) {
         bx = x + w;
       }
-      ctx.fillStyle = wallColor(100 / 10 * (10-depth));
+      ctx.fillStyle = wallColor(90 / 10 * (10-depth*2));
       ctx.beginPath();
       ctx.moveTo(px(bx), py(y));
       ctx.lineTo(px(bx+sw), py(y+sh));
@@ -46,9 +46,14 @@ var getDrawer = function() {
     ctx.fillStyle = 'rgb(50, 50, 50)';
     ctx.fillRect(0,0,px(16),py(16));
     setTimeout(function() {
-      ctx.beginPath();
       ctx.fillStyle = 'rgb(50, 50, 50)';
       ctx.fillRect(0,0,px(16),py(16));
+
+      ctx.fillStyle = 'rgb(40, 40, 40)';
+      ctx.fillRect(0,py(3),px(16),py(10));
+
+      ctx.fillStyle = 'rgb(30, 30, 30)';
+      ctx.fillRect(0,py(5),px(16),py(6));
 
       ctx.fillStyle = 'rgb(20, 20, 20)';
       ctx.fillRect(0,py(6),px(16),py(4));
