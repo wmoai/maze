@@ -45,47 +45,52 @@ var getDrawer = function() {
     ctx.beginPath();
     ctx.fillStyle = 'rgb(50, 50, 50)';
     ctx.fillRect(0,0,px(16),py(16));
+    setTimeout(function() {
+      ctx.beginPath();
+      ctx.fillStyle = 'rgb(50, 50, 50)';
+      ctx.fillRect(0,0,px(16),py(16));
 
-    ctx.fillStyle = 'rgb(20, 20, 20)';
-    ctx.fillRect(0,py(7),px(16),py(2));
+      ctx.fillStyle = 'rgb(20, 20, 20)';
+      ctx.fillRect(0,py(6),px(16),py(4));
 
-    if (map[3][Math.floor(map[3].length/2)-1]) {
-      wall(ctx, 3, 6, 3, 4, 1, 1, 3);
-    }
-    if (map[3][Math.floor(map[3].length/2)+1]) {
-      wall(ctx, 10, 6, 3, 4, -1, 1, 3);
-    }
-    if (map[3][Math.floor(map[3].length/2)]) {
-      wall(ctx, 6, 6, 4, 4, 0, 0, 3);
-    }
+      if (map[3][Math.floor(map[3].length/2)-1]) {
+        wall(ctx, 3, 6, 3, 4, 1, 1, 3);
+      }
+      if (map[3][Math.floor(map[3].length/2)+1]) {
+        wall(ctx, 10, 6, 3, 4, -1, 1, 3);
+      }
+      if (map[3][Math.floor(map[3].length/2)]) {
+        wall(ctx, 6, 6, 4, 4, 0, 0, 3);
+      }
 
-    if (map[2][Math.floor(map[3].length/2)-1]) {
-      wall(ctx, 0, 5, 5, 6, 1, 1, 2);
-    }
-    if (map[2][Math.floor(map[3].length/2)+1]) {
-      wall(ctx, 11, 5, 5, 6, -1, 1, 2);
-    }
-    if (map[2][Math.floor(map[3].length/2)]) {
-      wall(ctx, 5, 5, 6, 6, 0, 0, 2);
-    }
+      if (map[2][Math.floor(map[3].length/2)-1]) {
+        wall(ctx, 0, 5, 5, 6, 1, 1, 2);
+      }
+      if (map[2][Math.floor(map[3].length/2)+1]) {
+        wall(ctx, 11, 5, 5, 6, -1, 1, 2);
+      }
+      if (map[2][Math.floor(map[3].length/2)]) {
+        wall(ctx, 5, 5, 6, 6, 0, 0, 2);
+      }
 
-    if (map[1][Math.floor(map[3].length/2)-1]) {
-      wall(ctx, 0, 3, 3, 10, 2, 2, 1);
-    }
-    if (map[1][Math.floor(map[3].length/2)+1]) {
-      wall(ctx, 13, 3, 3, 10, -2, 2, 1);
-    }
-    if (map[1][Math.floor(map[3].length/2)]) {
-      wall(ctx, 3, 3, 10, 10, 0, 0, 1);
-    }
+      if (map[1][Math.floor(map[3].length/2)-1]) {
+        wall(ctx, 0, 3, 3, 10, 2, 2, 1);
+      }
+      if (map[1][Math.floor(map[3].length/2)+1]) {
+        wall(ctx, 13, 3, 3, 10, -2, 2, 1);
+      }
+      if (map[1][Math.floor(map[3].length/2)]) {
+        wall(ctx, 3, 3, 10, 10, 0, 0, 1);
+      }
 
-    if (map[0][Math.floor(map[3].length/2)-1]) {
-      wall(ctx, 0, 0, 0, 16, 3, 3, 0);
-    }
-    if (map[0][Math.floor(map[3].length/2)+1]) {
-      wall(ctx, 16, 0, 0, 16, -3, 3, 0);
-    }
-  };
+      if (map[0][Math.floor(map[3].length/2)-1]) {
+        wall(ctx, 0, 0, 0, 16, 3, 3, 0);
+      }
+      if (map[0][Math.floor(map[3].length/2)+1]) {
+        wall(ctx, 16, 0, 0, 16, -3, 3, 0);
+      }
+    } ,10);
+  }
   return _drawer;
 };
 
