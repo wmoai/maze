@@ -59,10 +59,10 @@ var getDrawer = function() {
       ctx.fillRect(0,py(6),px(16),py(4));
 
       if (map[3][Math.floor(map[3].length/2)-1]) {
-        wall(ctx, 3, 6, 3, 4, 1, 1, 3.5);
+        wall(ctx, 2, 6, 4, 4, 1, 1, 3.5);
       }
       if (map[3][Math.floor(map[3].length/2)+1]) {
-        wall(ctx, 10, 6, 3, 4, -1, 1, 3.5);
+        wall(ctx, 10, 6, 4, 4, -1, 1, 3.5);
       }
       if (map[3][Math.floor(map[3].length/2)]) {
         wall(ctx, 6, 6, 4, 4, 0, 0, 3);
