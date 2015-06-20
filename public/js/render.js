@@ -57,6 +57,8 @@ var getDrawer = function() {
 
       ctx.fillStyle = 'rgb(20, 20, 20)';
       ctx.fillRect(0,py(6),px(16),py(4));
+      wall(ctx, 0, 5, 0, 6, 2, 1, 3.5);
+      wall(ctx, 16, 5, 0, 6, -2, 1, 3.5);
 
       if (map[3][Math.floor(map[3].length/2)-1]) {
         wall(ctx, 2, 6, 4, 4, 1, 1, 3.5);

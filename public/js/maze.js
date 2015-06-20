@@ -168,6 +168,7 @@ $(function() {
   }
 
   var map = generateMap(baseWidth, baseHeight);
+  showMap(map);
 
   var Chara = function() {
     this.x = Math.floor(Math.random() * 3) * 2 + 1;
