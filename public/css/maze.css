@@ -32,8 +32,26 @@ body {
   }
 }
 
+#hp {
+  height: 20px;
+  border: solid 3px white;
+  overflow:hidden;
+}
+#hp-remain {
+  height: 100%;
+  background-color: seagreen;
+}
+
 #console {
   min-height: 50px;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: black;
+  color: white;
+  border: solid 3px white;
+}
+#inventory {
+  min-height: 200px;
   margin-top: 10px;
   padding: 5px 10px;
   background-color: black;

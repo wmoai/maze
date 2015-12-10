@@ -74,6 +74,19 @@ $(function() {
     });
     console.log(str);
   }
+  var showMap2 = function(map) {
+    map.forEach(function(row) {
+      var tr = $('<tr>')
+      row.forEach(function(cell) {
+        var td = $('<td>')
+        if (cell==1) {
+          td.addClass('ng')
+        }
+        tr.append(td)
+      });
+      $('#hoge').append(tr)
+    });
+  }
 
   var generateMap = function(width, height) {
     var map = [];
@@ -169,6 +182,7 @@ $(function() {
 
   var map = generateMap(baseWidth, baseHeight);
   showMap(map);
+  // showMap2(map);
 
   var Chara = function() {
     this.x = Math.floor(Math.random() * 3) * 2 + 1;

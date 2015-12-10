@@ -2,25 +2,22 @@ html
   head
     title maze
     script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
-    script(src="/js/maze.js")
     script(src="/js/render.js")
+    script(src="/js/map.js")
+    script(src="/js/item.js")
+    script(src="/js/chara.js")
+    script(src="/js/game.js")
     link(rel="stylesheet", href="/css/maze.css")
+    link(rel="stylesheet", href="/css/map.css")
     meta(name="viewport", content="width=device-width, maximum-scale=1.0, minimum-scale=0.5,user-scalable=no,initial-scale=1.0")
   body
     #container 
+      table#hoge
       #main
         canvas#view(width="640", height="640")
       #menu
+        #hp
+          #hp-remain
         #console
-        #manual
-          ul
-            li 1：ヒント×
-              span#hints 0
-            li ↑：前進
-            li ←：左を向く
-            li →：右を向く
-            li ↓：振り返る
-            li タップ：前進
-            li スワイプ：方向転換
-            li 長押し：ヒント
+        #inventory 
 
