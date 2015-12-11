@@ -71,7 +71,8 @@ body {
 }
 
 .item {
+  border: solid 1px white;
 }
 .item.equiped {
-  background-color: green;
+  background-color: mediumseagreen;
 }

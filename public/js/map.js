@@ -60,7 +60,6 @@ var Map = function(width, height) {
     this.array.push(line);
   }
   this._generateWall();
-  this._console();
 
   this.known = [];
   for (var i=1; i<=width; i++) {

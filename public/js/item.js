@@ -8,12 +8,12 @@ var Item = function(name, atk, dff, equipment, remaining, effect) {
 
   this.equiped = false;
 }
-Item.prototype.use = function(chara, target) {
+Item.prototype.use = function(chara, enemy) {
   if (!this.equipment) {
     this.remaining--;
   }
   if (this.effect) {
-    this.effect(chara, target);
+    this.effect(chara, enemy);
   }
 }
 Item.prototype.isExpended = function() {
@@ -54,7 +54,7 @@ var Shield = function(name, hardness) {
 Shield.prototype = new Equipment();
 
 var Medicine = function() {
-  Item.call(this, "medicine", 0, 0, false, 1, function(chara, target) {
+  Item.call(this, "medicine", 0, 0, false, 1, function(chara) {
     chara.cure(30);
   });
 }

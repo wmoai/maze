@@ -97,5 +97,9 @@ $(function() {
     }
   });
 
+
+  $(window).bind("beforeunload", function() {
+    return "このページを離れようとしています。";
+  });
 });
 

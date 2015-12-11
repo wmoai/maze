@@ -6,6 +6,7 @@ var Chara = function() {
     new Dagger("iron dagger", 1),
     new Shield("glove", 1),
     new Medicine(),
+    new Medicine(),
     new Medicine()
   ];
 }
