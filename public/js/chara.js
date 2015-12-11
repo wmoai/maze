@@ -3,11 +3,11 @@ var Chara = function() {
   this.maxHp = 100;
   this.str = 1;
   this.inventory = [
+    new Dagger("iron dagger", 1),
+    new Shield("glove", 1),
     new Medicine(),
     new Medicine()
   ];
-  this.rhand = null;
-  this.lhand = null;
 }
 Chara.prototype.getHpPercentile = function() {
   return Math.floor(this.hp / this.maxHp * 100);
@@ -18,5 +18,4 @@ Chara.prototype.cure = function(val) {
     this.hp = Math.min(this.hp, this.maxHp);
   }
 }
-
 

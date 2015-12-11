@@ -167,6 +167,10 @@ Map.prototype.look = function() {
   this.known[this.x][this.y-1] = this.array[this.x][this.y-1];
   this.known[this.x+1][this.y] = this.array[this.x+1][this.y];
   this.known[this.x][this.y+1] = this.array[this.x][this.y+1];
+  this.known[this.x+1][this.y+1] = this.array[this.x+1][this.y+1];
+  this.known[this.x-1][this.y+1] = this.array[this.x-1][this.y+1];
+  this.known[this.x+1][this.y-1] = this.array[this.x+1][this.y-1];
+  this.known[this.x-1][this.y-1] = this.array[this.x-1][this.y-1];
 }
 Map.prototype.walk = function() {
   var nx = this.x

@@ -70,4 +70,8 @@ body {
   padding: 0;
 }
 
-
+.item {
+}
+.item.equiped {
+  background-color: green;
+}

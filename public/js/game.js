@@ -1,7 +1,7 @@
 $(function() {
   var Game = function() {
     this.state = 0; // 0:map, 1:battle
-    this.map = new Map(Math.floor(Math.random() * 6) * 2 + 15, Math.floor(Math.random() * 6) * 2 + 15);
+    this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
     this.chara = new Chara();
     this.renderStatus();
   }
@@ -12,23 +12,28 @@ $(function() {
     $('#hp-remain').css({
       "width": this.chara.getHpPercentile() + "%"
     });
-    $('#inventory').text('');
+    $('#inventory').text(null);
     this.chara.inventory.forEach(function(item, index) {
+      var name = item.name;
+      if (!item.equipment) {
+        name += '[' + item.remaining + ']';
+      }
       var itemElem = $('<input>', {'class': 'item'}).attr({
         "type": "button",
-        "value": item.name,
+        "value": name,
         "data-index": index
       });
+      if (item.equiped) {
+        itemElem.addClass('equiped');
+      }
       $('#inventory').append(itemElem);
     });
   }
   Game.prototype.useItem = function(index) {
     var item = this.chara.inventory[index];
-    console.log(this.chara.inventory);
-    console.log(index);
     if (item) {
-      item.effect(this.chara);
-      if (item.expendable) {
+      item.use(this.chara);
+      if (item.isExpended()) {
         this.chara.inventory.splice(index, 1);
       }
     }
@@ -66,7 +71,6 @@ $(function() {
     game.renderStatus();
   });
   $('html').on('click', '.item', function() {
-    console.log("hoge");
     var index = $(this).data().index;
     if (index%1===0) {
       game.useItem(index);
