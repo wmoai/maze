@@ -1,4 +1,8 @@
 $(function() {
+  $(window).bind("beforeunload", function() {
+    return "このページを離れようとしています。";
+  });
+
   var Game = function() {
     this.state = 0; // 0:map, 1:battle
     this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
@@ -18,6 +22,7 @@ $(function() {
 
   var Inventory = React.createClass({
     handleClick: function(e) {
+      e.target.blur();
       var index = $(e.target).data().index;
       if (index%1===0) {
         this.props.useItemDelegate(index);
@@ -69,7 +74,6 @@ $(function() {
     getInitialState: function() {
       return {
         game: new Game(),
-        message: [],
         renderedMap: false
       };
     },
@@ -137,12 +141,6 @@ $(function() {
         </div>
       );
     }
-  });
-
-
-
-  $(window).bind("beforeunload", function() {
-    return "このページを離れようとしています。";
   });
 
   ReactDOM.render(

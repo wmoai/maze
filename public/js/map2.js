@@ -45,6 +45,7 @@ var Map = function(width, height) {
   this.x = Math.floor(Math.random() * 3) * 2 + 1;
   this.y = Math.floor(Math.random() * 3) * 2 + 1;
   this.dir = Math.floor(Math.random() * 3);
+  this.depth = 0;
 
   this.array = [];
   for (var i=1; i<=width; i++) {

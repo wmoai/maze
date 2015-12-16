@@ -1,4 +1,8 @@
 $(function () {
+  $(window).bind("beforeunload", function () {
+    return "このページを離れようとしています。";
+  });
+
   var Game = function () {
     this.state = 0; // 0:map, 1:battle
     this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
@@ -16,9 +20,10 @@ $(function () {
   };
 
   var Inventory = React.createClass({
-    displayName: 'Inventory',
+    displayName: "Inventory",
 
     handleClick: function (e) {
+      e.target.blur();
       var index = $(e.target).data().index;
       if (index % 1 === 0) {
         this.props.useItemDelegate(index);
@@ -27,17 +32,17 @@ $(function () {
     render: function () {
       var self = this;
       return React.createElement(
-        'div',
-        { id: 'inventory' },
+        "div",
+        { id: "inventory" },
         this.props.chara.inventory.map(function (item, index) {
           var name = item.name;
           if (!item.equipment) {
             name += '[' + item.remaining + ']';
           }
           if (item.equiped) {
-            return React.createElement('input', { className: 'item equiped', type: 'button', value: name, 'data-index': index, onClick: self.handleClick });
+            return React.createElement("input", { className: "item equiped", type: "button", value: name, "data-index": index, onClick: self.handleClick });
           } else {
-            return React.createElement('input', { className: 'item', type: 'button', value: name, 'data-index': index, onClick: self.handleClick });
+            return React.createElement("input", { className: "item", type: "button", value: name, "data-index": index, onClick: self.handleClick });
           }
         })
       );
@@ -45,26 +50,26 @@ $(function () {
   });
 
   var HP = React.createClass({
-    displayName: 'HP',
+    displayName: "HP",
 
     render: function () {
       return React.createElement(
-        'div',
-        { id: 'hp' },
-        React.createElement('div', { id: 'hp-remain', style: { width: this.props.chara.getHpPercentile() + '%' } })
+        "div",
+        { id: "hp" },
+        React.createElement("div", { id: "hp-remain", style: { width: this.props.chara.getHpPercentile() + '%' } })
       );
     }
   });
 
   var Console = React.createClass({
-    displayName: 'Console',
+    displayName: "Console",
 
     render: function () {
       return React.createElement(
-        'div',
-        { id: 'console' },
+        "div",
+        { id: "console" },
         React.createElement(
-          'div',
+          "div",
           null,
           this.props.message
         )
@@ -73,12 +78,11 @@ $(function () {
   });
 
   var GameScreen = React.createClass({
-    displayName: 'GameScreen',
+    displayName: "GameScreen",
 
     getInitialState: function () {
       return {
         game: new Game(),
-        message: [],
         renderedMap: false
       };
     },
@@ -134,26 +138,22 @@ $(function () {
     },
     render: function () {
       return React.createElement(
-        'div',
-        { id: 'container' },
+        "div",
+        { id: "container" },
         React.createElement(
-          'div',
-          { id: 'main' },
-          React.createElement('canvas', { id: 'view', width: 1000, height: 1000 }),
+          "div",
+          { id: "main" },
+          React.createElement("canvas", { id: "view", width: 1000, height: 1000 }),
           React.createElement(Console, { message: this.state.message })
         ),
         React.createElement(
-          'div',
-          { id: 'menu' },
+          "div",
+          { id: "menu" },
           React.createElement(HP, { chara: this.state.game.chara }),
           React.createElement(Inventory, { chara: this.state.game.chara, useItemDelegate: this.useItem })
         )
       );
     }
-  });
-
-  $(window).bind("beforeunload", function () {
-    return "このページを離れようとしています。";
   });
 
   ReactDOM.render(React.createElement(GameScreen, null), document.getElementById('content'));
