@@ -5,8 +5,8 @@ $(function() {
     this.chara = new Chara();
     this.renderStatus();
   }
-  Game.prototype.action = function() {
-
+  Game.prototype.console = function(text) {
+    $('#console').prepend($('<div>').text(text));
   }
   Game.prototype.renderStatus = function() {
     $('#hp-remain').css({
@@ -32,7 +32,7 @@ $(function() {
   Game.prototype.useItem = function(index) {
     var item = this.chara.inventory[index];
     if (item) {
-      item.use(this.chara);
+      item.use(this, this.chara);
       if (item.isExpended()) {
         this.chara.inventory.splice(index, 1);
       }
@@ -44,13 +44,16 @@ $(function() {
   var game = new Game();
 
 
+  var showMap = false;
   $('html').on('keydown', function(e) {
-    if (e.keyCode == 32) {
+    if (e.keyCode == 32 && !showMap) {
+      showMap = true;
       game.map.illustrate();
     }
   });
   $('html').on('keyup', function(e) {
     if (e.keyCode == 32) {
+      showMap = false;
       game.map.view();
     }
     switch(e.keyCode) {

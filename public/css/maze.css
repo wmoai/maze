@@ -43,12 +43,13 @@ body {
 }
 
 #console {
-  min-height: 50px;
+  height: 80px;
   margin-top: 10px;
   padding: 5px 10px;
   background-color: black;
   color: white;
   border: solid 3px white;
+  overflow: scroll;
 }
 #inventory {
   min-height: 200px;

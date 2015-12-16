@@ -38,7 +38,7 @@ Drawer.prototype.view = function(view) {
   ctx.beginPath();
   ctx.fillStyle = 'rgb(50, 50, 50)';
   ctx.fillRect(0,0,self.px(16),self.py(16));
-  setTimeout(function() {
+  // setTimeout(function() {
     ctx.fillStyle = 'rgb(50, 50, 50)';
     ctx.fillRect(0,0,self.px(16),self.py(16));
 
@@ -89,7 +89,7 @@ Drawer.prototype.view = function(view) {
     if (view[0][Math.floor(view[3].length/2)+1]) {
       self.drawWall(ctx, 16, 0, 0, 16, -3, 3, 0.5);
     }
-  } ,10);
+  // } ,10);
 }
 Drawer.prototype.map = function(map) {
   canvas = document.getElementById('view');

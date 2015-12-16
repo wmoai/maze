@@ -3,11 +3,10 @@ var Chara = function() {
   this.maxHp = 100;
   this.str = 1;
   this.inventory = [
-    new Dagger("iron dagger", 1),
-    new Shield("glove", 1),
-    new Medicine(),
-    new Medicine(),
-    new Medicine()
+    new Dagger("鉄のダガー", 1),
+    new Shield("革手袋", 1),
+    new Medicine("傷薬", 30),
+    new Medicine("傷薬", 30)
   ];
 }
 Chara.prototype.getHpPercentile = function() {
