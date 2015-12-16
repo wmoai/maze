@@ -2,24 +2,18 @@ html
   head
     title maze
     script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
-    script(src="/js/render.js")
-    script(src="/js/map.js")
+    script(src="/js/react.js")
+    script(src="/js/react-dom.js")
+    script(src="/js/map2.js")
+    script(src="/js/render2.js")
     script(src="/js/item.js")
     script(src="/js/chara.js")
     script(src="/js/enemy.js")
     script(src="/js/battle.js")
-    script(src="/js/game.js")
     link(rel="stylesheet", href="/css/maze.css")
     link(rel="stylesheet", href="/css/map.css")
     meta(name="viewport", content="width=device-width, maximum-scale=1.0, minimum-scale=0.5,user-scalable=no,initial-scale=1.0")
   body
-    #container 
-      table#hoge
-      #main
-        canvas#view(width="640", height="640")
-      #menu
-        #hp
-          #hp-remain
-        #console
-        #inventory 
+    #content
+    script(src="/js/build/game.js")
 
