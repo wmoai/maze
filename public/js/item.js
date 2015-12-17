@@ -8,12 +8,12 @@ var Item = function(name, atk, dff, equipment, remaining, effect) {
 
   this.equiped = false;
 }
-Item.prototype.use = function(game, chara, enemy) {
+Item.prototype.use = function(game, player, enemy) {
   if (!this.equipment) {
     this.remaining--;
   }
   if (this.effect) {
-    return this.effect(game, chara, enemy);
+    return this.effect(game, player, enemy);
   }
 }
 Item.prototype.isExpended = function() {
@@ -24,11 +24,11 @@ Item.prototype.isExpended = function() {
 }
 
 var Equipment = function(name, atk, dff) {
-  Item.call(this, name, atk, dff, true, 0, function(game, chara) {
+  Item.call(this, name, atk, dff, true, 0, function(game, player) {
     var exists = false;
     var count = 0;
     var self = this;
-    chara.inventory.forEach(function(item) {
+    player.inventory.forEach(function(item) {
       if (self == item) {
         exists = true;
       }
@@ -39,9 +39,9 @@ var Equipment = function(name, atk, dff) {
     if (exists && (count < 2 || this.equiped)) {
       this.equiped = !this.equiped;
       if (this.equiped) {
-        return this.name + "を装備した"
+        return [this.name + "を装備した"]
       } else {
-        return this.name + "を外した"
+        return [this.name + "を外した"]
       }
 
     }
@@ -60,9 +60,9 @@ var Shield = function(name, hardness) {
 Shield.prototype = new Equipment();
 
 var Medicine = function(name, efficacy) {
-  Item.call(this, name, 0, 0, false, 1, function(game, chara) {
-    chara.cure(efficacy);
-    return "傷を手当てした"
+  Item.call(this, name, 0, 0, false, 1, function(game, player) {
+    player.cure(efficacy);
+    return ["傷を手当てした"]
   });
 }
 Medicine.prototype = new Item();

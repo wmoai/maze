@@ -4,18 +4,23 @@ $(function () {
   });
 
   var Game = function () {
-    this.state = 0; // 0:map, 1:battle
     this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
-    this.chara = new Chara();
+    this.player = new Player();
   };
   Game.prototype.useItem = function (index) {
-    var item = this.chara.inventory[index];
+    var item = this.player.inventory[index];
     if (item) {
-      var msg = item.use(this, this.chara);
+      var msg = item.use(this, this.player);
       if (item.isExpended()) {
-        this.chara.inventory.splice(index, 1);
+        this.player.inventory.splice(index, 1);
       }
       return msg;
+    }
+  };
+  Game.prototype.engage = function () {
+    if (this.battle == null && Math.random() < 0.1) {
+      this.battle = new Battle(this);
+      return this.battle.proceed();
     }
   };
 
@@ -34,7 +39,7 @@ $(function () {
       return React.createElement(
         "div",
         { id: "inventory" },
-        this.props.chara.inventory.map(function (item, index) {
+        this.props.player.inventory.map(function (item, index) {
           var name = item.name;
           if (!item.equipment) {
             name += '[' + item.remaining + ']';
@@ -56,7 +61,7 @@ $(function () {
       return React.createElement(
         "div",
         { id: "hp" },
-        React.createElement("div", { id: "hp-remain", style: { width: this.props.chara.getHpPercentile() + '%' } })
+        React.createElement("div", { id: "hp-remain", style: { width: this.props.player.getHpPercentile() + '%' } })
       );
     }
   });
@@ -65,14 +70,20 @@ $(function () {
     displayName: "Console",
 
     render: function () {
+      var message = this.props.message;
+      if (!message) {
+        message = [];
+      }
       return React.createElement(
         "div",
         { id: "console" },
-        React.createElement(
-          "div",
-          null,
-          this.props.message
-        )
+        message.map(function (line) {
+          return React.createElement(
+            "div",
+            null,
+            line
+          );
+        })
       );
     }
   });
@@ -89,6 +100,7 @@ $(function () {
     componentDidMount: function () {
       $(document.body).on('keydown', this.handleKeydown);
       $(document.body).on('keyup', this.handleKeyup);
+      $('#view').on('click', this.handleClickCanvas);
       var drawer = new Drawer(document.getElementById('view'));
       this.setState({
         drawer: drawer
@@ -98,6 +110,7 @@ $(function () {
     componentWillUnmount: function () {
       $(document.body).off('keydown', this.handleKeydown);
       $(document.body).off('keyup', this.handleKeyup);
+      $('#view').off('click', this.handleClickCanvas);
     },
     handleKeydown: function (e) {
       if (e.keyCode == 32 && !this.state.renderedMap) {
@@ -107,20 +120,26 @@ $(function () {
     },
     handleKeyup: function (e) {
       var game = this.state.game;
-      switch (e.keyCode) {
-        case 37:
-          game.map.turnLeft();
-          break;
-        case 38:
-          game.chara.cure(1);
-          game.map.walk();
-          break;
-        case 39:
-          game.map.turnRight();
-          break;
-        case 40:
-          game.map.turnBack();
-          break;
+      if (game.player.isDead()) {
+        return;
+      }
+      if (game.battle == null) {
+        switch (e.keyCode) {
+          case 37:
+            game.map.turnLeft();
+            break;
+          case 38:
+            game.player.cure(1);
+            game.map.walk();
+            this.console(game.engage());
+            break;
+          case 39:
+            game.map.turnRight();
+            break;
+          case 40:
+            game.map.turnBack();
+            break;
+        }
       }
       this.setState({
         game: game,
@@ -128,13 +147,29 @@ $(function () {
       });
       this.state.drawer.view(game.map.getVision());
     },
+    handleClickCanvas: function (e) {
+      var game = this.state.game;
+      if (game.player.isDead()) {
+        return;
+      }
+      if (game.battle) {
+        this.console(game.battle.proceed());
+        if (game.battle.end) {
+          game.battle = null;
+        }
+      }
+      this.setState({ game: game });
+      return false;
+    },
     useItem: function (index) {
       var game = this.state.game;
       this.console(game.useItem(index));
       this.setState({ game: game });
     },
-    console: function (text) {
-      this.setState({ message: text });
+    console: function (message) {
+      if (message != null) {
+        this.setState({ message: message });
+      }
     },
     render: function () {
       return React.createElement(
@@ -149,8 +184,8 @@ $(function () {
         React.createElement(
           "div",
           { id: "menu" },
-          React.createElement(HP, { chara: this.state.game.chara }),
-          React.createElement(Inventory, { chara: this.state.game.chara, useItemDelegate: this.useItem })
+          React.createElement(HP, { player: this.state.game.player }),
+          React.createElement(Inventory, { player: this.state.game.player, useItemDelegate: this.useItem })
         )
       );
     }
