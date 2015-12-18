@@ -8,10 +8,10 @@ var Chara = function(name, hp, atk, dff) {
   this.movable = true;
 }
 Chara.prototype.cure = function(val) {
-  if (val%1 === 0) {
+  // if (val%1 === 0) {
     this.hp += val
     this.hp = Math.min(this.hp, this.maxHp);
-  }
+  // }
 }
 Chara.prototype.getAtk = function() {
   var val = this.atk;
@@ -33,16 +33,21 @@ Chara.prototype.getDff = function() {
   });
   return val;
 }
-Chara.prototype.attack = function(target) {
-  var base = this.getAtk() / 2 - target.getDff() / 4;
+Chara.prototype.attack = function(target, atk) {
+  atk = atk || 0;
+  var base = (this.getAtk() + atk) / 2 - target.getDff() / 4;
+  base = Math.max(0, base);
   var rnd = Math.floor(Math.random() * 3) - 1;
   var dmg = Math.floor(base * (8+rnd) / 8 + rnd);
+  dmg = Math.max(0, dmg);
   target.hp -= dmg;
   target.hp = Math.max(target.hp, 0);
-  var msg = [
-    this.name + "の攻撃",
-    target.name + "に" + dmg + "のダメージ"
-  ];
+  var msg = [this.name + "の攻撃"];
+  if (dmg > 0) {
+    msg.push(target.name + "に" + dmg + "のダメージ");
+  } else {
+    msg.push("ミス！" + target.name + "はダメージを受けない");
+  }
   if (target.isDead()) {
     msg.push(target.name + "は死んだ");
   }
@@ -57,8 +62,8 @@ Chara.prototype.isDead = function() {
 var Player = function() {
   Chara.call(this, "あなた", 20, 10, 0);
   this.inventory = [
-    new Dagger("鉄のダガー", 1),
-    new Shield("革手袋", 1),
+    new Dagger("鉄のダガー", 2),
+    new Shield("革手袋", 2),
     new Medicine("傷薬", 20),
     new Medicine("傷薬", 20)
   ];

@@ -6,6 +6,13 @@ body {
   overflow:hidden;
   margin: 10px auto;
 }
+#view-box {
+  position: relative;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
 
 @media screen and (min-width: 800px) {
   #container {
@@ -30,6 +37,17 @@ body {
     width: 300px;
     height: 300px;
   }
+}
+
+.enemy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  color: white;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 #hp {

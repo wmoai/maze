@@ -6,6 +6,8 @@ $(function () {
   var Game = function () {
     this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
     this.player = new Player();
+    this.safe = 10;
+    this.depth = 0;
   };
   Game.prototype.useItem = function (index) {
     var item = this.player.inventory[index];
@@ -18,7 +20,10 @@ $(function () {
     }
   };
   Game.prototype.engage = function () {
-    if (this.battle == null && Math.random() < 0.1) {
+    if (this.safe > 0) {
+      this.safe--;
+    } else if (this.battle == null && Math.random() < 0.05) {
+      this.safe = 10;
       this.battle = new Battle(this);
       return this.battle.proceed();
     }
@@ -100,7 +105,7 @@ $(function () {
     componentDidMount: function () {
       $(document.body).on('keydown', this.handleKeydown);
       $(document.body).on('keyup', this.handleKeyup);
-      $('#view').on('click', this.handleClickCanvas);
+      $('#view-box').on('click', this.handleClickCanvas);
       var drawer = new Drawer(document.getElementById('view'));
       this.setState({
         drawer: drawer
@@ -110,7 +115,7 @@ $(function () {
     componentWillUnmount: function () {
       $(document.body).off('keydown', this.handleKeydown);
       $(document.body).off('keyup', this.handleKeyup);
-      $('#view').off('click', this.handleClickCanvas);
+      $('#view-box').off('click', this.handleClickCanvas);
     },
     handleKeydown: function (e) {
       if (e.keyCode == 32 && !this.state.renderedMap) {
@@ -129,7 +134,7 @@ $(function () {
             game.map.turnLeft();
             break;
           case 38:
-            game.player.cure(1);
+            game.player.cure(game.player.maxHp / 128);
             game.map.walk();
             this.console(game.engage());
             break;
@@ -153,7 +158,8 @@ $(function () {
         return;
       }
       if (game.battle) {
-        this.console(game.battle.proceed());
+        var enemyIndex = $(e.target).data('index');
+        this.console(game.battle.proceed(enemyIndex));
         if (game.battle.end) {
           game.battle = null;
         }
@@ -163,6 +169,9 @@ $(function () {
     },
     useItem: function (index) {
       var game = this.state.game;
+      if (game.player.isDead()) {
+        return;
+      }
       this.console(game.useItem(index));
       this.setState({ game: game });
     },
@@ -172,13 +181,32 @@ $(function () {
       }
     },
     render: function () {
+      var enemy = null;
+      if (this.state.game.battle) {
+        enemy = this.state.game.battle.enemies.map(function (enemy, index) {
+          var style = {
+            top: "70%",
+            left: 100 * index + 50 + "px"
+          };
+          return React.createElement(
+            "div",
+            { className: "enemy", "data-index": index, style: style },
+            enemy.name
+          );
+        });
+      }
       return React.createElement(
         "div",
         { id: "container" },
         React.createElement(
           "div",
           { id: "main" },
-          React.createElement("canvas", { id: "view", width: 1000, height: 1000 }),
+          React.createElement(
+            "div",
+            { id: "view-box" },
+            React.createElement("canvas", { id: "view", width: 1000, height: 1000 }),
+            enemy
+          ),
           React.createElement(Console, { message: this.state.message })
         ),
         React.createElement(

@@ -42,8 +42,8 @@ Array.prototype.sliceSquare = function(start1, count1, start2, count2) {
 var Map = function(width, height) {
   this.width = width;
   this.height = height;
-  this.x = Math.floor(Math.random() * 3) * 2 + 1;
-  this.y = Math.floor(Math.random() * 3) * 2 + 1;
+  this.x = Math.floor(Math.random() * (width / 2)) * 2 + 1;
+  this.y = Math.floor(Math.random() * (height / 2)) * 2 + 1;
   this.dir = Math.floor(Math.random() * 3);
   this.depth = 0;
 
