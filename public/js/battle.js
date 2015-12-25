@@ -4,8 +4,8 @@ var Battle = function(game) {
 }
 Battle.prototype._engage = function() {
   var tables = [
-    [ BigWorm, TalonBat, MudMouse , ReceiptLizard],
-    [ BigWorm, TalonBat, MudMouse ]
+    [ BigWorm, TalonBat, MudMouse ],
+    [ BigWorm, TalonBat, MudMouse , ReceiptLizard ]
   ]
   var enemyCount = Math.floor(Math.random() * 3 + 1);
   this.enemies = [];
@@ -14,56 +14,49 @@ Battle.prototype._engage = function() {
     var enemy = new table[Math.floor(Math.random() * table.length)];
     this.enemies.push(enemy);
   }
-  var msg = [];
+  var game = this.game;
   this.enemies.forEach(function(enemy) {
-    msg.push(enemy.name + "があらわれた");
+    game.addMessage([enemy.name + "があらわれた"]);
   });
-  this.messages = [msg];
 }
 Battle.prototype.proceed = function(index) {
-  if (this.messages.length > 0) {
-    var message = this.messages.shift();
-    if (this._end && this.messages.length == 0) {
-      this.end = true;
-      this.game.player.movable = true;
-    }
-    return message;
-  } else if (this.game.player.movable) {
+  if (this.game.player.movable) {
     if (index != undefined) {
-      return this.attack(index);
+      this.attack(index);
     }
   } else {
-    return this.enemyTurn(index);
+    this.enemyTurn(index);
   }
 }
 Battle.prototype.attack = function(index) {
   var player = this.game.player;
   var target = this.enemies[index];
-  this.messages.push(player.attack(target));
+  this.game.addMessage(player.attack(target));
   if (target.isDead()) {
     this.enemies.splice(index, 1);
   }
   if (this.enemies.length == 0) {
-    this.messages.push(["敵はいなくなった"]);
-    this._end = true;
+    this.game.messages.push(["敵はいなくなった"]);
+    this.end = true;
+  } else {
+    player.movable = false;
   }
-  player.movable = false;
-  return this.proceed(index);
 }
 Battle.prototype.enemyTurn = function(index) {
   var self = this;
   var moved = false;
+  var end = true;
   this.enemies.forEach(function(enemy) {
     if (!moved && enemy.movable) {
-      moved = true;
-      self.messages.push(enemy.action(self.game));
+      self.game.addMessage(enemy.action(self.game));
       enemy.movable = false;
+      moved = true;
     }
+    end = end && !enemy.movable;
   });
-  if (!moved) {
+  if (end) {
     self.turnEnd();
   }
-  return this.proceed(index);
 }
 Battle.prototype.turnEnd = function() {
   this.game.player.movable = true;

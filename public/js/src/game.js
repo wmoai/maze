@@ -6,8 +6,12 @@ $(function() {
   var Game = function() {
     this.map = new Map(Math.floor(Math.random() * 3) * 2 + 19, Math.floor(Math.random() * 3) * 2 + 19);
     this.player = new Player();
-    this.safe = 10;
     this.depth = 0;
+    this.messages = [];
+    this.initEngage();
+  }
+  Game.prototype.initEngage = function() {
+    this._engage = 8 + (Math.random() * 20);
   }
   Game.prototype.useItem = function(index) {
     var item = this.player.inventory[index];
@@ -16,17 +20,29 @@ $(function() {
       if (item.isExpended()) {
         this.player.inventory.splice(index, 1);
       }
-      return msg;
+      if (msg != null || msg != '') {
+        this.addMessage(msg);
+      }
+    }
+  }
+  Game.prototype.proceedBattle = function(index) {
+    this.battle.proceed(index);
+    if (this.battle.end) {
+      this.battle = null;
     }
   }
   Game.prototype.engage = function() {
-    if (this.safe > 0) {
-      this.safe--;
-    } else if (this.battle == null && Math.random() < 0.05) {
+    var rnd = Math.random();
+    this._engage -= rnd;
+    if (this.battle == null && this._engage < 0) {
       this.safe = 10;
       this.battle = new Battle(this);
-      return this.battle.proceed();
+      this.battle.proceed();
+      this.initEngage();
     }
+  }
+  Game.prototype.addMessage = function(messages) {
+    Array.prototype.push.apply(this.messages, messages);
   }
 
 
@@ -72,15 +88,15 @@ $(function() {
 
   var Console = React.createClass({
     render: function() {
-      var message = this.props.message;
-      if (!message) {
-        message = [];
+      var messages = this.props.messages;
+      if (!messages) {
+        messages = [];
       }
       return (
         <div id="console">
         {
-          message.map(function(line) {
-            return <div>{line}</div>
+          messages.map(function(message) {
+            return <div>{message}</div>
           })
         }
         </div>
@@ -92,7 +108,8 @@ $(function() {
     getInitialState: function() {
       return {
         game: new Game(),
-        renderedMap: false
+        renderedMap: false,
+        messages: []
       };
     },
     componentDidMount: function() {
@@ -129,7 +146,8 @@ $(function() {
         case 38:
           game.player.cure(game.player.maxHp / 128);
           game.map.walk();
-          this.console(game.engage());
+          game.engage();
+          this.showMessages();
           break;
         case 39:
           game.map.turnRight();
@@ -152,10 +170,8 @@ $(function() {
       }
       if (game.battle) {
         var enemyIndex = $(e.target).data('index');
-        this.console(game.battle.proceed(enemyIndex));
-        if (game.battle.end) {
-          game.battle = null;
-        }
+        game.proceedBattle(enemyIndex);
+        this.showMessages();
       }
       this.setState({game: game});
       return false;
@@ -165,12 +181,14 @@ $(function() {
       if (game.player.isDead()) {
         return;
       }
-      this.console(game.useItem(index));
+      game.useItem(index);
+      this.showMessages();
       this.setState({game: game});
     },
-    console: function(message) {
-      if (message != null) {
-        this.setState({message: message});
+    showMessages: function() {
+      if (this.state.game.messages.length > 0) {
+        this.setState({messages: this.state.game.messages});
+        this.state.game.messages = [];
       }
     },
     render: function() {
@@ -195,7 +213,7 @@ $(function() {
               <canvas id="view" width={1000} height={1000} />
               {enemy}
             </div>
-            <Console message={this.state.message} />
+            <Console messages={this.state.messages} />
           </div>
           <div id="menu">
             <HP player={this.state.game.player} />
