@@ -8,10 +8,8 @@ var Chara = function(name, hp, atk, dff) {
   this.movable = true;
 }
 Chara.prototype.cure = function(val) {
-  // if (val%1 === 0) {
-    this.hp += val
-    this.hp = Math.min(this.hp, this.maxHp);
-  // }
+  this.hp += val
+  this.hp = Math.min(this.hp, this.maxHp);
 }
 Chara.prototype.getAtk = function() {
   var val = this.atk;

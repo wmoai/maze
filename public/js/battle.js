@@ -19,10 +19,14 @@ Battle.prototype._engage = function() {
     game.addMessage([enemy.name + "があらわれた"]);
   });
 }
-Battle.prototype.proceed = function(index) {
+Battle.prototype.action = function(index, item) {
   if (this.game.player.movable) {
-    if (index != undefined) {
+    if (index == undefined) {
+      return;
+    } else if (item == null) {
       this.attack(index);
+    } else {
+      // use item
     }
   } else {
     this.enemyTurn(index);
