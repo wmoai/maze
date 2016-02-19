@@ -37,57 +37,58 @@ Drawer.prototype.view = function(view) {
   ctx.beginPath();
   ctx.fillStyle = 'rgb(50, 50, 50)';
   ctx.fillRect(0,0,self.px(16),self.py(16));
+  // setTimeout(function() {
+    ctx.fillStyle = 'rgb(50, 50, 50)';
+    ctx.fillRect(0,0,self.px(16),self.py(16));
 
-  ctx.fillStyle = 'rgb(50, 50, 50)';
-  ctx.fillRect(0,0,self.px(16),self.py(16));
+    ctx.fillStyle = 'rgb(40, 40, 40)';
+    ctx.fillRect(0,self.py(3),self.px(16),self.py(10));
 
-  ctx.fillStyle = 'rgb(40, 40, 40)';
-  ctx.fillRect(0,self.py(3),self.px(16),self.py(10));
+    ctx.fillStyle = 'rgb(30, 30, 30)';
+    ctx.fillRect(0,self.py(5),self.px(16),self.py(6));
 
-  ctx.fillStyle = 'rgb(30, 30, 30)';
-  ctx.fillRect(0,self.py(5),self.px(16),self.py(6));
+    ctx.fillStyle = 'rgb(20, 20, 20)';
+    ctx.fillRect(0,self.py(6),self.px(16),self.py(4));
+    self.drawWall(ctx, 0, 5, 0, 6, 2, 1, 3.5);
+    self.drawWall(ctx, 16, 5, 0, 6, -2, 1, 3.5);
 
-  ctx.fillStyle = 'rgb(20, 20, 20)';
-  ctx.fillRect(0,self.py(6),self.px(16),self.py(4));
-  self.drawWall(ctx, 0, 5, 0, 6, 2, 1, 3.5);
-  self.drawWall(ctx, 16, 5, 0, 6, -2, 1, 3.5);
+    if (view[3][Math.floor(view[3].length/2)-1]) {
+      self.drawWall(ctx, 2, 6, 4, 4, 1, 1, 3.5);
+    }
+    if (view[3][Math.floor(view[3].length/2)+1]) {
+      self.drawWall(ctx, 10, 6, 4, 4, -1, 1, 3.5);
+    }
+    if (view[3][Math.floor(view[3].length/2)]) {
+      self.drawWall(ctx, 6, 6, 4, 4, 0, 0, 3);
+    }
 
-  if (view[3][Math.floor(view[3].length/2)-1]) {
-    self.drawWall(ctx, 2, 6, 4, 4, 1, 1, 3.5);
-  }
-  if (view[3][Math.floor(view[3].length/2)+1]) {
-    self.drawWall(ctx, 10, 6, 4, 4, -1, 1, 3.5);
-  }
-  if (view[3][Math.floor(view[3].length/2)]) {
-    self.drawWall(ctx, 6, 6, 4, 4, 0, 0, 3);
-  }
+    if (view[2][Math.floor(view[3].length/2)-1]) {
+      self.drawWall(ctx, 0, 5, 5, 6, 1, 1, 2.5);
+    }
+    if (view[2][Math.floor(view[3].length/2)+1]) {
+      self.drawWall(ctx, 11, 5, 5, 6, -1, 1, 2.5);
+    }
+    if (view[2][Math.floor(view[3].length/2)]) {
+      self.drawWall(ctx, 5, 5, 6, 6, 0, 0, 2);
+    }
 
-  if (view[2][Math.floor(view[3].length/2)-1]) {
-    self.drawWall(ctx, 0, 5, 5, 6, 1, 1, 2.5);
-  }
-  if (view[2][Math.floor(view[3].length/2)+1]) {
-    self.drawWall(ctx, 11, 5, 5, 6, -1, 1, 2.5);
-  }
-  if (view[2][Math.floor(view[3].length/2)]) {
-    self.drawWall(ctx, 5, 5, 6, 6, 0, 0, 2);
-  }
+    if (view[1][Math.floor(view[3].length/2)-1]) {
+      self.drawWall(ctx, 0, 3, 3, 10, 2, 2, 1.5);
+    }
+    if (view[1][Math.floor(view[3].length/2)+1]) {
+      self.drawWall(ctx, 13, 3, 3, 10, -2, 2, 1.5);
+    }
+    if (view[1][Math.floor(view[3].length/2)]) {
+      self.drawWall(ctx, 3, 3, 10, 10, 0, 0, 1);
+    }
 
-  if (view[1][Math.floor(view[3].length/2)-1]) {
-    self.drawWall(ctx, 0, 3, 3, 10, 2, 2, 1.5);
-  }
-  if (view[1][Math.floor(view[3].length/2)+1]) {
-    self.drawWall(ctx, 13, 3, 3, 10, -2, 2, 1.5);
-  }
-  if (view[1][Math.floor(view[3].length/2)]) {
-    self.drawWall(ctx, 3, 3, 10, 10, 0, 0, 1);
-  }
-
-  if (view[0][Math.floor(view[3].length/2)-1]) {
-    self.drawWall(ctx, 0, 0, 0, 16, 3, 3, 0.5);
-  }
-  if (view[0][Math.floor(view[3].length/2)+1]) {
-    self.drawWall(ctx, 16, 0, 0, 16, -3, 3, 0.5);
-  }
+    if (view[0][Math.floor(view[3].length/2)-1]) {
+      self.drawWall(ctx, 0, 0, 0, 16, 3, 3, 0.5);
+    }
+    if (view[0][Math.floor(view[3].length/2)+1]) {
+      self.drawWall(ctx, 16, 0, 0, 16, -3, 3, 0.5);
+    }
+  // } ,10);
 }
 Drawer.prototype.map = function(map) {
   var ctx = this.canvas.getContext('2d');
@@ -112,3 +113,4 @@ Drawer.prototype.map = function(map) {
   ctx.fillRect(map.x*u, (height-1-map.y)*u, u, u);
 }
 
+module.exports = Drawer;

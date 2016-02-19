@@ -42,10 +42,10 @@ Array.prototype.sliceSquare = function(start1, count1, start2, count2) {
 var Map = function(width, height) {
   this.width = width;
   this.height = height;
-  this.x = Math.floor(Math.random() * 3) * 2 + 1;
-  this.y = Math.floor(Math.random() * 3) * 2 + 1;
+  this.x = Math.floor(Math.random() * (width / 2)) * 2 + 1;
+  this.y = Math.floor(Math.random() * (height / 2)) * 2 + 1;
   this.dir = Math.floor(Math.random() * 3);
-  this.drawer = new Drawer(document.getElementById('view'));
+  this.depth = 0;
 
   this.array = [];
   for (var i=1; i<=width; i++) {
@@ -69,7 +69,6 @@ var Map = function(width, height) {
     }
     this.known.push(line);
   }
-  this.view();
 }
 Map.prototype._generateWall = function() {
   var settable = [];
@@ -90,7 +89,7 @@ Map.prototype._generateWall = function() {
 
   this.array[rx][ry] = 2;
   while (true) {
-    movable = [];
+    const movable = [];
     if (rx+2 < this.array.length && this.array[rx+2][ry] != 2) {
       movable.push([2, 0]);
     }
@@ -142,7 +141,7 @@ Map.prototype._generateWall = function() {
     }
   }
 }
-Map.prototype.view = function() {
+Map.prototype.getVision = function() {
   var px = this.x
     , py = this.y
     , dir = this.dir
@@ -157,8 +156,8 @@ Map.prototype.view = function() {
   } else if (dir == 3) {
     view = this.array.sliceSquare(px-3, 4 ,py-2, 5).reverse().rotateClockwise(0);
   }
-  this.drawer.view(view);
   this.look();
+  return view;
 }
 Map.prototype.look = function() {
   this.known[this.x][this.y] = this.array[this.x][this.y];
@@ -191,26 +190,19 @@ Map.prototype.walk = function() {
   if (this.array[nx][ny] == 0) {
     this.x = nx;
     this.y = ny;
-    this.view();
   }
 }
 Map.prototype.turnLeft = function() {
   this.dir += 3;
   this.dir %= 4;
-  this.view();
 }
 Map.prototype.turnRight = function() {
   this.dir++;
   this.dir %= 4;
-  this.view();
 }
 Map.prototype.turnBack = function() {
   this.dir += 2;
   this.dir %= 4;
-  this.view();
-}
-Map.prototype.illustrate = function() {
-  this.drawer.map(this);
 }
 Map.prototype._console = function() {
   var str = "";
@@ -226,4 +218,6 @@ Map.prototype._console = function() {
   });
   console.log(str);
 }
+
+module.exports = Map;
 

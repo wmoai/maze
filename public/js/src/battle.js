@@ -1,3 +1,9 @@
+let Enemy = require('./enemy');
+let BigWorm = Enemy.bigWorm;
+let MudMouse = Enemy.mudMouse;
+let TalonBat = Enemy.talonBat;
+let ReceiptLizard = Enemy.receiptLizard;
+
 var Battle = function(game) {
   this.game = game;
   this._engage();
@@ -70,3 +76,5 @@ Battle.prototype.turnEnd = function() {
     enemy.movable = true;
   });
 }
+
+module.exports = Battle;

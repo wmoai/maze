@@ -81,5 +81,6 @@ var Bomb = function(name, damage) {
   });
 }
 
-
-
+exports.dagger = Dagger;
+exports.shield = Shield;
+exports.medicine = Medicine;

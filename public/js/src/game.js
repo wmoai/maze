@@ -1,3 +1,11 @@
+let React = require('react');
+let ReactDOM = require('react-dom');
+
+let Map = require('./map');
+let Drawer = require('./drawer');
+let Player = require('./player');
+let Battle = require('./battle');
+
 window.addEventListener("beforeunload", function (e) {
   var confirmationMessage = "このページを離れようとしています。";
   (e || window.event).returnValue = confirmationMessage;
@@ -55,10 +63,9 @@ var Inventory = React.createClass({
     }
   },
   render: function() {
-    var self = this;
     return (
       <div id="inventory">
-      {this.props.player.inventory.map(function(item, index) {
+      {this.props.player.inventory.map((item, index) => {
         var name = item.name;
         if (!item.equipment) {
           name += '[' + item.remaining + ']';
@@ -69,7 +76,7 @@ var Inventory = React.createClass({
             value={name}
             data-index={index}
             key={index}
-            onClick={self.handleClick}
+            onClick={this.handleClick}
             />
           );
         } else {
@@ -78,7 +85,7 @@ var Inventory = React.createClass({
             value={name}
             data-index={index}
             key={index}
-            onClick={self.handleClick}
+            onClick={this.handleClick}
             />
           );
         }
