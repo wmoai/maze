@@ -58,37 +58,31 @@ var Inventory = React.createClass({
     var self = this;
     return (
       <div id="inventory">
-      {
-        this.props.player.inventory.map(function(item, index) {
-          var name = item.name;
-          if (!item.equipment) {
-            name += '[' + item.remaining + ']';
-          }
-          if (item.equiped) {
-            return (
-              <input
-              className="item equiped"
-              type="button"
-              value={name}
-              data-index={index}
-              key={index}
-              onClick={self.handleClick}
-              />
-            );
-          } else {
-            return (
-              <input
-              className="item"
-              type="button"
-              value={name}
-              data-index={index}
-              key={index}
-              onClick={self.handleClick}
-              />
-            );
-          }
-        })
-      }
+      {this.props.player.inventory.map(function(item, index) {
+        var name = item.name;
+        if (!item.equipment) {
+          name += '[' + item.remaining + ']';
+        }
+        if (item.equiped) {
+          return (
+            <input className="item equiped" type="button"
+            value={name}
+            data-index={index}
+            key={index}
+            onClick={self.handleClick}
+            />
+          );
+        } else {
+          return (
+            <input className="item" type="button"
+            value={name}
+            data-index={index}
+            key={index}
+            onClick={self.handleClick}
+            />
+          );
+        }
+      })}
       </div>
     );
   }
@@ -124,6 +118,27 @@ var Console = React.createClass({
   }
 });
 
+var CanvasScreen = React.createClass({
+  render: function() {
+    return (
+      <div id="view-box" onClick={this.props.onClick}>
+        <canvas id="view" width={1000} height={1000} />
+        {this.props.enemies.map(function(enemy, index) {
+          var style = {
+            top: "70%",
+            left: 100 * index + 50 +  "px"
+          };
+          return (
+            <div className="enemy" data-index={index} key={index} style={style}>
+              {enemy.name}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+});
+
 var GameScreen = React.createClass({
   getInitialState: function() {
     return {
@@ -146,9 +161,11 @@ var GameScreen = React.createClass({
     document.body.removeEventListener('keyup', this.handleKeyup);
   },
   handleKeydown: function(e) {
-    if (e.keyCode == 32 && !this.state.renderedMap) {
-      this.state.drawer.map(this.state.game.map);
-      this.setState({renderedMap: true});
+    if (this.state.game.battle == null) {
+      if (e.keyCode == 32 && !this.state.renderedMap) {
+        this.state.drawer.map(this.state.game.map);
+        this.setState({renderedMap: true});
+      }
     }
   },
   handleKeyup: function(e) {
@@ -210,27 +227,14 @@ var GameScreen = React.createClass({
     }
   },
   render: function() {
-    var enemy = null;
+    var enemies = [];
     if (this.state.game.battle) {
-      enemy = this.state.game.battle.enemies.map(function(enemy, index) {
-        var style = {
-          top: "70%",
-          left: 100 * index + 50 +  "px"
-        };
-        return (
-          <div className="enemy" data-index={index} key={index} style={style}>
-            {enemy.name}
-          </div>
-        );
-      })
+      enemies = this.state.game.battle.enemies;
     }
     return (
       <div id="container">
         <div id="main">
-          <div id="view-box" onClick={this.handleClickCanvas}>
-            <canvas id="view" width={1000} height={1000} />
-            {enemy}
-          </div>
+          <CanvasScreen onClick={this.handleClickCanvas} enemies={enemies} />
           <Console messages={this.state.messages} />
         </div>
         <div id="menu">

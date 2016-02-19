@@ -66,18 +66,14 @@ var Inventory = React.createClass({
           name += '[' + item.remaining + ']';
         }
         if (item.equiped) {
-          return React.createElement("input", {
-            className: "item equiped",
-            type: "button",
+          return React.createElement("input", { className: "item equiped", type: "button",
             value: name,
             "data-index": index,
             key: index,
             onClick: self.handleClick
           });
         } else {
-          return React.createElement("input", {
-            className: "item",
-            type: "button",
+          return React.createElement("input", { className: "item", type: "button",
             value: name,
             "data-index": index,
             key: index,
@@ -125,6 +121,29 @@ var Console = React.createClass({
   }
 });
 
+var CanvasScreen = React.createClass({
+  displayName: "CanvasScreen",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "view-box", onClick: this.props.onClick },
+      React.createElement("canvas", { id: "view", width: 1000, height: 1000 }),
+      this.props.enemies.map(function (enemy, index) {
+        var style = {
+          top: "70%",
+          left: 100 * index + 50 + "px"
+        };
+        return React.createElement(
+          "div",
+          { className: "enemy", "data-index": index, key: index, style: style },
+          enemy.name
+        );
+      })
+    );
+  }
+});
+
 var GameScreen = React.createClass({
   displayName: "GameScreen",
 
@@ -149,9 +168,11 @@ var GameScreen = React.createClass({
     document.body.removeEventListener('keyup', this.handleKeyup);
   },
   handleKeydown: function (e) {
-    if (e.keyCode == 32 && !this.state.renderedMap) {
-      this.state.drawer.map(this.state.game.map);
-      this.setState({ renderedMap: true });
+    if (this.state.game.battle == null) {
+      if (e.keyCode == 32 && !this.state.renderedMap) {
+        this.state.drawer.map(this.state.game.map);
+        this.setState({ renderedMap: true });
+      }
     }
   },
   handleKeyup: function (e) {
@@ -213,19 +234,9 @@ var GameScreen = React.createClass({
     }
   },
   render: function () {
-    var enemy = null;
+    var enemies = [];
     if (this.state.game.battle) {
-      enemy = this.state.game.battle.enemies.map(function (enemy, index) {
-        var style = {
-          top: "70%",
-          left: 100 * index + 50 + "px"
-        };
-        return React.createElement(
-          "div",
-          { className: "enemy", "data-index": index, key: index, style: style },
-          enemy.name
-        );
-      });
+      enemies = this.state.game.battle.enemies;
     }
     return React.createElement(
       "div",
@@ -233,12 +244,7 @@ var GameScreen = React.createClass({
       React.createElement(
         "div",
         { id: "main" },
-        React.createElement(
-          "div",
-          { id: "view-box", onClick: this.handleClickCanvas },
-          React.createElement("canvas", { id: "view", width: 1000, height: 1000 }),
-          enemy
-        ),
+        React.createElement(CanvasScreen, { onClick: this.handleClickCanvas, enemies: enemies }),
         React.createElement(Console, { messages: this.state.messages })
       ),
       React.createElement(

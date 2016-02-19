@@ -1,12 +1,14 @@
 var Battle = function(game) {
   this.game = game;
   this._engage();
+
+  this.field = [null, null, null];
 }
 Battle.prototype._engage = function() {
   var tables = [
     [ BigWorm, TalonBat, MudMouse ],
     [ BigWorm, TalonBat, MudMouse , ReceiptLizard ]
-  ]
+  ];
   var enemyCount = Math.floor(Math.random() * 3 + 1);
   this.enemies = [];
   var table = tables[this.game.depth];
@@ -26,7 +28,7 @@ Battle.prototype.action = function(index, item) {
     } else if (item == null) {
       this.attack(index);
     } else {
-      // use item
+      // arg [item] given, so use item
     }
   } else {
     this.enemyTurn(index);
