@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="maze.js"></script>
+    <script src="render.js"></script>
+    <link rel="stylesheet" href="maze.css" />
+  </head>
+  <div id="container">
+    <div id="main">
+      <canvas id="view" width="640" height="640" />
+    </div>
+    <div id="menu">
+      <div id="console"></div>
+      <div id="manual">
+        <ul>
+          <li>1：ヒント×
+            <span id="hints">0</span>
+          </li>
+          <li>↑：前進</li>
+          <li>←：左を向く</li>
+          <li>→：右を向く</li>
+          <li>↓：振り返る</li>
+          <li>タップ：前進</li>
+          <li>スワイプ：方向転換</li>
+          <li>長押し：ヒント</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</html>
+
